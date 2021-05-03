@@ -37,10 +37,10 @@ def run(test_opts):
 	dataset = LatentsDataset(latents=test_latents.cpu(),
 										 opts=opts)
 	dataloader = DataLoader(dataset,
-	                        batch_size=opts.test_batch_size,
-	                        shuffle=False,
-	                        num_workers=int(opts.test_workers),
-	                        drop_last=True)
+							batch_size=opts.test_batch_size,
+							shuffle=False,
+							num_workers=int(opts.test_workers),
+							drop_last=True)
 
 	if opts.n_images is None:
 		opts.n_images = len(dataset)
@@ -56,7 +56,6 @@ def run(test_opts):
 			result_batch = run_on_batch(input_cuda, net, test_opts.couple_outputs)
 			toc = time.time()
 			global_time.append(toc - tic)
-
 		for i in range(opts.test_batch_size):
 			im_path = str(global_i).zfill(5)
 			if test_opts.couple_outputs:
@@ -65,8 +64,9 @@ def run(test_opts):
 			else:
 				torchvision.utils.save_image(result_batch[0][i], os.path.join(out_path_results, f"{im_path}.jpg"), normalize=True, range=(-1, 1))
 			torch.save(result_batch[1][i].detach().cpu(), os.path.join(out_path_results, f"latent_{im_path}.pt"))
-
+			torch.save(result_batch[1][i].detach().cpu()-input_batch, os.path.join(out_path_results, f"latent_delta_{im_path}.pt"))
 			global_i += 1
+
 
 	stats_path = os.path.join(opts.exp_dir, 'stats.txt')
 	result_str = 'Runtime {:.4f}+-{:.4f}'.format(np.mean(global_time), np.std(global_time))
