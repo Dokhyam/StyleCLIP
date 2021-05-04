@@ -47,7 +47,8 @@ def run(test_opts):
 	
 	global_i = 0
 	global_time = []
-	for input_batch in tqdm(dataloader):
+	for i in range(opts.n_images):
+		input_batch = np.random.rand((18,512))
 		if global_i >= opts.n_images:
 			break
 		with torch.no_grad():
@@ -90,4 +91,6 @@ def run_on_batch(inputs, net, couple_outputs=False):
 
 if __name__ == '__main__':
 	test_opts = TestOptions().parse()
+	run(test_opts)
+
 	run(test_opts)
