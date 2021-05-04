@@ -19,14 +19,14 @@ from mapper.options.test_options import TestOptions
 from mapper.styleclip_mapper import StyleCLIPMapper
 
 
-def run(test_opts):
+def run():
 	out_path_results = os.path.join(test_opts.exp_dir, 'inference_results')
 	os.makedirs(out_path_results, exist_ok=True)
 
 	# update test options with options used during training
 	ckpt = torch.load(test_opts.checkpoint_path, map_location='cpu')
 	opts = ckpt['opts']
-	opts.update(vars(test_opts))
+# 	opts.update(vars(test_opts))
 	opts = Namespace(**opts)
 
 	net = StyleCLIPMapper(opts)
