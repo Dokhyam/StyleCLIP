@@ -47,8 +47,7 @@ def run(test_opts):
 	
 	global_i = 0
 	global_time = []
-	for i in range(opts.n_images):
-		input_batch = np.random.rand((18,512))
+	for input_batch in tqdm(dataloader):
 		if global_i >= opts.n_images:
 			break
 		with torch.no_grad():
@@ -57,6 +56,7 @@ def run(test_opts):
 			result_batch = run_on_batch(input_cuda, net, test_opts.couple_outputs)
 			toc = time.time()
 			global_time.append(toc - tic)
+	delta_latent = 0
 		for i in range(opts.test_batch_size):
 			im_path = str(global_i).zfill(5)
 			if test_opts.couple_outputs:
@@ -93,4 +93,3 @@ if __name__ == '__main__':
 	test_opts = TestOptions().parse()
 	run(test_opts)
 
-	run(test_opts)
