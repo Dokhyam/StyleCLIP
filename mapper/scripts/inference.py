@@ -47,6 +47,8 @@ def run(test_opts):
 	
 	global_i = 0
 	global_time = []
+	delta_latent = 0
+
 	for input_batch in tqdm(dataloader):
 		if global_i >= opts.n_images:
 			break
@@ -56,7 +58,6 @@ def run(test_opts):
 			result_batch = run_on_batch(input_cuda, net, test_opts.couple_outputs)
 			toc = time.time()
 			global_time.append(toc - tic)
-	delta_latent = 0
 		for i in range(opts.test_batch_size):
 			im_path = str(global_i).zfill(5)
 			if test_opts.couple_outputs:
@@ -92,4 +93,5 @@ def run_on_batch(inputs, net, couple_outputs=False):
 if __name__ == '__main__':
 	test_opts = TestOptions().parse()
 	run(test_opts)
+
 
