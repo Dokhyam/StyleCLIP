@@ -28,6 +28,7 @@ def run():
 	opts = ckpt['opts']
 # 	opts.update(vars(test_opts))
 	opts = Namespace(**opts)
+	opts.stylegan_weights = '/disk1/dokhyam/StyleCLIP/mapper/pretrained//stylegan2-ffhq-config-f.pt'
 
 	net = StyleCLIPMapper(opts)
 	net.eval()
