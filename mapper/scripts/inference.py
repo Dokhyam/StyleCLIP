@@ -20,15 +20,19 @@ from mapper.styleclip_mapper import StyleCLIPMapper
 
 
 def run():
-	out_path_results = os.path.join(test_opts.exp_dir, 'inference_results')
+	opts = TestOptions().parse()
+	out_path_results = os.path.join(opts.exp_dir, 'inference_results')
 	os.makedirs(out_path_results, exist_ok=True)
 
 	# update test options with options used during training
-	ckpt = torch.load(test_opts.checkpoint_path, map_location='cpu')
+	ckpt = torch.load(opts.checkpoint_path, map_location='cpu')
 	opts = ckpt['opts']
 # 	opts.update(vars(test_opts))
 	opts = Namespace(**opts)
-
+	opts.stylegan_weights = '/disk1/dokhyam/StyleCLIP/mapper/pretrained//stylegan2-ffhq-config-f.pt'
+	opts.latents_test_path = '/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt'
+	opts.couple_outputs = False
+#	test_opts=opts
 	net = StyleCLIPMapper(opts)
 	net.eval()
 	net.cuda()
@@ -55,12 +59,12 @@ def run():
 		with torch.no_grad():
 			input_cuda = input_batch.cuda().float()
 			tic = time.time()
-			result_batch = run_on_batch(input_cuda, net, test_opts.couple_outputs)
+			result_batch = run_on_batch(input_cuda, net, opts.couple_outputs)
 			toc = time.time()
 			global_time.append(toc - tic)
 		for i in range(opts.test_batch_size):
 			im_path = str(global_i).zfill(5)
-			if test_opts.couple_outputs:
+			if opts.couple_outputs:
 				couple_output = torch.cat([result_batch[2][i].unsqueeze(0), result_batch[0][i].unsqueeze(0)])
 				torchvision.utils.save_image(couple_output, os.path.join(out_path_results, f"{im_path}.jpg"), normalize=True, range=(-1, 1))
 			else:
