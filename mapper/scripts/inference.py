@@ -33,6 +33,9 @@ def run():
 	opts.latents_test_path = '/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt'
 	opts.couple_outputs = False
 #	test_opts=opts
+
+
+
 	net = StyleCLIPMapper(opts)
 	net.eval()
 	net.cuda()
