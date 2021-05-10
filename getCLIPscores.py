@@ -13,7 +13,9 @@ directions_path = '/disk1/dokhyam/StyleCLIP/directions/'
 image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 directions_list = os.listdir(directions_path)
 image_ind = 0
-StyleGANGenerator = Generator(256,512,8)
+StyleGANGenerator = Generator(18,512,8)
+StyleGANGenerator.cuda()
+StyleGANGenerator.eval()
 StyleGANGenerator.load_state_dict(ckpt['g_ema'], strict=False)
 for d in directions_list:
 	input_batch = image_latents[image_ind,:,:]
