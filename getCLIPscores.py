@@ -8,7 +8,6 @@ directions_list = os.listdir(directions_path)
 image_ind = 0
 StyleGANGenerator = Generator(1024,512,8)
 for d in directions_list:
-	input_batch = image_latents[i,:]
+	input_batch = image_latents[image_ind,:,:]
 	input_cuda = input_batch.cuda().float()
 	I_1 = StyleGANGenerator(input_cuda)
-	
