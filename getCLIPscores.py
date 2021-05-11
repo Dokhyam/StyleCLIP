@@ -6,6 +6,8 @@ import clip
 from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
+
 StyleGANGenerator = Generator(1024,512,8).to(device).eval().load_state_dict(ckpt['g_ema'], strict=False)
 
 def generate_image_from_latents(latent_code, randomize_noise=True):
@@ -31,7 +33,6 @@ def get_keys(d, name):
 
 def run():
 	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
-	ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
 	directions_path = '/disk1/dokhyam/StyleCLIP/directions/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
