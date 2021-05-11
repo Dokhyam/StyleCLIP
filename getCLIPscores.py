@@ -12,7 +12,7 @@ def generate_image_from_latents(latent_code, randomize_noise=True):
 	StyleGANGenerator = Generator(1024,512,8).to(device).eval()
 	StyleGANGenerator.load_state_dict(ckpt['g_ema'], strict=False)
 	out = StyleGANGenerator([latent_code],input_is_latent=True, randomize_noise=True)
-	return out.squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
+	return out[0].squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
 
 def get_clip_text_embedding(text:list, clip_model):
 	tokenized_text = clip.tokenize(text).to(device)
@@ -59,6 +59,7 @@ def run():
 		
 if __name__ == "__main__":
 	run()
+	
 	
 	
 	
