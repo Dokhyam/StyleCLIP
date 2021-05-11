@@ -14,7 +14,7 @@ def generate_image_from_latents(latent_code, randomize_noise=True):
 	out = StyleGANGenerator([latent_code],input_is_latent=True, randomize_noise=True)
 	return out[0].squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
 
-def get_clip_text_embedding(text:list, clip_model):
+def get_clip_text_embeddings(text:list, clip_model):
 	tokenized_text = clip.tokenize(text).to(device)
 	return clip_model.encode_text(tokenized_text)
 
