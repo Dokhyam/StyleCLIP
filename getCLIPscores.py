@@ -45,7 +45,7 @@ def run():
 		input_cuda = input_batch.to(device).float()
 		I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
 		I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
-		s_neutral = 'face with hair'
+		s_neutral = 'She has hair'
 		neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
 		s_temp = ['Her hair is in a tight bun', 'She has a brown bob']
 		with torch.no_grad():
