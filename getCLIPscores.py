@@ -6,6 +6,7 @@ import clip
 from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+StyleGANGenerator = Generator(1024,512,8).to(device).eval().load_state_dict(ckpt['g_ema'], strict=False)
 
 def generate_image_from_latents(latent_code, randomize_noise=True):
 	out = StyleGANGenerator([latent_code],input_is_latent=True, randomize_noise=True)
@@ -35,7 +36,7 @@ def run():
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
 	image_ind = 0
-	StyleGANGenerator = Generator(1024,512,8).to(device).eval().load_state_dict(ckpt['g_ema'], strict=False)
+	
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
