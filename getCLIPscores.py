@@ -6,11 +6,11 @@ import clip
 from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
+ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
+StyleGANGenerator = Generator(1024,512,8).to(device).eval()
+StyleGANGenerator.load_state_dict(ckpt['g_ema'], strict=False)
 
 def generate_image_from_latents(latent_code, randomize_noise=True):
-	ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
-	StyleGANGenerator = Generator(1024,512,8).to(device).eval()
-	StyleGANGenerator.load_state_dict(ckpt['g_ema'], strict=False)
 	out = StyleGANGenerator([latent_code],input_is_latent=True, randomize_noise=True)
 	return out[0].squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
 
@@ -53,7 +53,7 @@ def run():
 			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
 			for i in range(len(text_embeddings_diff)):
 				cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
-				print(cos_sim)
+				print(f'text: {s_temp[i]}. score: {cos_sim}')
 			
 
 		image_ind +=1
