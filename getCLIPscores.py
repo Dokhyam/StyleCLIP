@@ -6,11 +6,10 @@ import clip
 from PIL import Image
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
-
-StyleGANGenerator = Generator(1024,512,8).to(device).eval().load_state_dict(ckpt['g_ema'], strict=False)
 
 def generate_image_from_latents(latent_code, randomize_noise=True):
+	ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
+	StyleGANGenerator = Generator(1024,512,8).to(device).eval().load_state_dict(ckpt['g_ema'], strict=False)
 	out = StyleGANGenerator([latent_code],input_is_latent=True, randomize_noise=True)
 	return out.squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
 
@@ -38,7 +37,6 @@ def run():
 	directions_list = os.listdir(directions_path)
 	image_ind = 0
 	
-	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
 		alpha =  np.random.uniform(1.0,4.0)
@@ -60,6 +58,7 @@ def run():
 		
 if __name__ == "__main__":
 	run()
+	
 	
 	
 
