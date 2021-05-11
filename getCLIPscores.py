@@ -51,8 +51,9 @@ def run():
 		with torch.no_grad():
 			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I1, clip_model) - get_clip_image_embeddings(clip_preprocess,I2, clip_model)
 			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
-			cos_sim = [ cosine_similarity(image_embeddings_diff,text_embeddings_diff[i]) for i in range(len(text_embeddings_diff))] 
-			print(cos_sim)
+			for i in range(len(text_embeddings_diff):
+				cos_sim = cosine_similarity(image_embeddings_diff,text_embeddings_diff[i]) 
+				print(cos_sim)
 			
 
 		image_ind +=1
