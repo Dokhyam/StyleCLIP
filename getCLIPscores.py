@@ -49,7 +49,7 @@ def run():
 		neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
 		s_temp = ['Her hair is in a tight bun', 'She has a brown bob']
 		with torch.no_grad():
-			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I1, clip_model) - get_clip_image_embeddings(clip_preprocess,I2, clip_model)
+			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I2, clip_model) - get_clip_image_embeddings(clip_preprocess,I1, clip_model)
 			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
 			for i in range(len(text_embeddings_diff)):
 				cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
