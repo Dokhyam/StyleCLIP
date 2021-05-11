@@ -52,7 +52,7 @@ def run():
 			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I1, clip_model) - get_clip_image_embeddings(clip_preprocess,I2, clip_model)
 			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
 			for i in range(len(text_embeddings_diff)):
-				cos_sim = cosine_similarity(image_embeddings_diff,text_embeddings_diff[i]) 
+				cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
 				print(cos_sim)
 			
 
