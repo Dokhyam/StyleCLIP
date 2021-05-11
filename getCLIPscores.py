@@ -47,7 +47,7 @@ def run():
 		I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
 		s_neutral = 'She has hair'
 		neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
-		s_temp = ['Her hair is in a tight bun', 'She has a brown bob']
+		s_temp = ['Her hair is in a tight bun', 'Her hair is brown']
 		with torch.no_grad():
 			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I2, clip_model) - get_clip_image_embeddings(clip_preprocess,I1, clip_model)
 			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
