@@ -40,7 +40,7 @@ def run():
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
-		alpha =  np.random.uniform(1.0,4.0)
+		alpha =  np.random.uniform(1.5,4.0)
 		input_batch = image_latents[image_ind,:,:]
 		input_cuda = input_batch.to(device).float()
 		I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
