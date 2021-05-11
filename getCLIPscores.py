@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import torch
 from models.stylegan2.model import Generator
 
