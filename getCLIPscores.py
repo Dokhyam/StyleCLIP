@@ -20,6 +20,6 @@ StyleGANGenerator.load_state_dict(ckpt['g_ema'], strict=False)
 for d in directions_list:
 	input_batch = image_latents[image_ind,:,:]
 	input_cuda = input_batch.cuda().float()
-	out1= StyleGANGenerator([input_cuda.unsqueeze(0)],input_is_latent=True)
+	out1= StyleGANGenerator([input_cuda.unsqueeze(0)],input_is_latent=True, randomize_noise=True)
 	I1 = out1[0].squeeze(0).transpose(0,1).transpose(1,2).detach().cpu().numpy()
 
