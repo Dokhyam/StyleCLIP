@@ -1,4 +1,5 @@
 import os
+import os
 import datasets
 from transformers import AdamW, get_linear_schedule_with_warmup
 from torch.utils.data import DataLoader, random_split
@@ -30,6 +31,7 @@ def group_texts(examples, block_size=128):
 	return result
 
 def train_iteration(
+	ind,
 	results_path,
 	d_data_path,
 	sentences_data_path,
@@ -64,7 +66,7 @@ def train_iteration(
 	training_args = TrainingArguments(
 	    output_dir=results_path, #The output directory
 	    overwrite_output_dir=True, #overwrite the content of the output directory
-	    num_train_epochs=30, # number of training epochs
+	    num_train_epochs=30*(ind+1), # number of training epochs
 	    per_device_train_batch_size=4, # batch size for training
 	    per_device_eval_batch_size=4,  # batch size for evaluation
 	    evaluation_strategy = "epoch",
@@ -90,6 +92,7 @@ if __name__ == "__main__":
 	results_path1 = "/home/dokhyam/trainer_out"
 	saved_models_path = '/home/dokhyam/Models/'
 	train_iteration(
+		0,
 		results_path1,
 		d_data_path,
 		sentences_data_path,
@@ -98,6 +101,7 @@ if __name__ == "__main__":
 		)
 	results_path2 = "/home/dokhyam/trainer_out2"
 	train_iteration(
+		1,
 		results_path2,
 		d_data_path,
 		sentences_data_path,
@@ -105,3 +109,4 @@ if __name__ == "__main__":
 		saved_models_path,
 		previous_model_path=os.path.join(results_path1, 'checkpoint-500')
 		)
+
