@@ -35,14 +35,14 @@ def train_iteration(
 	sentences_data_path,
 	val_sentences_data_path, 
 	saved_models_path,
-	with_d=True,
+	with_d=False,
 	previous_model_path=None
 	):
 	if not os.path.exists(saved_models_path):
 		os.mkdir(saved_models_path)
 	# Training and optimization configs 
-	
-
+	if with_d==True:
+		ds_f = os.listdir(d_data_path)
 	if previous_model_path is None:
 		gpt2_model = transformers.GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id,output_hidden_states=True)
 	else:
@@ -79,7 +79,7 @@ def train_iteration(
 	    train_dataset=lm_datasets["train"],
 	    eval_dataset=lm_datasets["validation"],
 	)
-	trainer.train()
+	trainer.train(resume_from_checkpoint=previous_model_path)
 
 
 if __name__ == "__main__":
