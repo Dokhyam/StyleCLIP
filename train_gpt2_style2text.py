@@ -18,7 +18,8 @@ def tokenize_function(examples):
 	return tokenizer(examples["text"])
 
 def embed_function(examples):
-	return wte(examples)
+	input_ids = examples['input_ids']
+	return wte(torch.LongTensor(input_ids))
 
 def group_texts(examples, block_size=128):
 	# Concatenate all texts.
