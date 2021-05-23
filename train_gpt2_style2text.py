@@ -72,7 +72,7 @@ def train_iteration(
 	datasets = load_dataset("text", data_files={"train":sentences_data_path , "validation": val_sentences_data_path})
 	tokenized_datasets = datasets.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
 	embedded_datasets = tokenized_datasets.map(embed_function)
-	temp_data = embedded_datasets.map(add_directions, ds_f)
+	temp_data = embedded_datasets.map(add_directions)
 	lm_datasets = tokenized_datasets.map(
 		group_texts,
 		batched=True,
