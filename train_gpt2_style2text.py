@@ -99,7 +99,10 @@ def train_iteration(
 	    train_dataset=lm_datasets["train"],
 	    eval_dataset=lm_datasets["validation"],
 	)
-	trainer.train(resume_from_checkpoint=previous_model_path)
+	if previous_model_path is None:
+		trainer.train()
+	else:
+		trainer.train(resume_from_checkpoint=previous_model_path)
 
 
 if __name__ == "__main__":
