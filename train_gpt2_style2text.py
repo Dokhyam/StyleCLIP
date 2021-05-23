@@ -10,6 +10,7 @@ import time
 from datasets import load_dataset
 import transformers
 import torch.nn as nn
+import numpy as np
 from transformers import DataCollatorForLanguageModeling,LineByLineTextDataset,TextDataset, Trainer, TrainingArguments
 
 tokenizer = transformers.GPT2Tokenizer.from_pretrained("gpt2")
@@ -26,8 +27,13 @@ def embed_function(examples):
 	input_embeds = wte(torch.LongTensor(input_ids))
 	rand_i = random.randint(0,len(ds_f)-1)
 	direction = torch.load(os.path.join(d_data_path,ds_f[rand_i]))[0]
-	examples['inputs_embeds'] = input_embeds
-	examples['labels'] = examples['input_ids'].copy()
+	direction_pad = torch.zeros((18,input_embeds.shape[1]))
+	direction_pad[:,:input_embeds.shape[1]-1] = direction
+	full_embedded_input = torch.cat((direction_pad,input_embeds))
+	examples['inputs_embeds'] = full_embedded_input
+	labels_pad = np.ones((1,18))[0].astype(np.int8)*-100
+	labels_full = np.hstack([labels_pad, examples['input_ids'].copy()])
+	examples['labels'] = labels_full
 	examples.pop('input_ids')
 	return examples
 
