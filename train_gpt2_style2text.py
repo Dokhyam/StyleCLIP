@@ -8,12 +8,17 @@ import torch
 import time
 from datasets import load_dataset
 import transformers
+import torch.nn as nn
 from transformers import DataCollatorForLanguageModeling,LineByLineTextDataset,TextDataset, Trainer, TrainingArguments
 
 tokenizer = transformers.GPT2Tokenizer.from_pretrained("gpt2")
+wte = nn.Embedding(50257,768)
 
 def tokenize_function(examples):
 	return tokenizer(examples["text"])
+
+def embed_function(examples):
+	return wte(examples)
 
 def group_texts(examples, block_size=128):
 	# Concatenate all texts.
@@ -49,13 +54,13 @@ def train_iteration(
 		gpt2_model = transformers.GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id,output_hidden_states=True)
 	else:
 		gpt2_model = transformers.GPT2LMHeadModel.from_pretrained(previous_model_path, pad_token_id=tokenizer.eos_token_id,output_hidden_states=True)
-# 	gpt2_model = gpt2.model.train()
 	max_length = 20
 	eof = '<|endoftext|>'
 	block_size = 128
 	# dataloaders
 	datasets = load_dataset("text", data_files={"train":sentences_data_path , "validation": val_sentences_data_path})
 	tokenized_datasets = datasets.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
+	embedded_datasets = tokenized_datasets.map(embed_function)
 	lm_datasets = tokenized_datasets.map(
 		group_texts,
 		batched=True,
