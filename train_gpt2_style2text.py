@@ -98,7 +98,7 @@ def train_iteration(
 	    per_device_train_batch_size=1, # batch size for training
 	    per_device_eval_batch_size=1,  # batch size for evaluation
 	    evaluation_strategy = "epoch",
-	    save_steps=100, # after # steps model is saved
+	    save_steps=10000, # after # steps model is saved
 	    warmup_steps=10,# number of warmup steps for learning rate scheduler
 	    prediction_loss_only=True,
 	    )
