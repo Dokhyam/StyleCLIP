@@ -73,13 +73,13 @@ def train_iteration(
 	datasets = load_dataset("text", data_files={"train":sentences_data_path , "validation": val_sentences_data_path})
 	tokenized_datasets = datasets.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
 	embedded_datasets = tokenized_datasets.map(embed_function)
-	temp_data = embedded_datasets.map(add_directions)
-	lm_datasets = tokenized_datasets.map(
-		group_texts,
-		batched=True,
-		batch_size=64,
-		num_proc=4,
-	)
+	lm_datasets = embedded_datasets.map(add_directions)
+# 	lm_datasets = tokenized_datasets.map(
+# 		group_texts,
+# 		batched=True,
+# 		batch_size=64,
+# 		num_proc=4,
+# 	)
 
 	training_args = TrainingArguments(
 	    output_dir=results_path, #The output directory
