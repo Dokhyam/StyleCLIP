@@ -25,7 +25,7 @@ def embed_function(examples):
 	input_ids = examples['input_ids']
 	input_embeds = wte(torch.LongTensor(input_ids))
 	examples['inputs_embeds'] = input_embeds
-	examples['labels'] = examples['input_embeds'].copy()
+	examples['labels'] = examples['inputד_embeds'].copy()
 	examples.pop('input_ids')
 	return examples
 
