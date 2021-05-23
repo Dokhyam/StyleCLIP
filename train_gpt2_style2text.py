@@ -14,6 +14,9 @@ from transformers import DataCollatorForLanguageModeling,LineByLineTextDataset,T
 
 tokenizer = transformers.GPT2Tokenizer.from_pretrained("gpt2")
 wte = nn.Embedding(50257,768)
+BASE_PATH = '/disk1/dokhyam/Style2Text/'
+d_data_path = BASE_PATH + 'directions/'
+ds_f = os.listdir(d_data_path)
 
 def tokenize_function(examples):
 	return tokenizer(examples["text"])
@@ -58,8 +61,6 @@ def train_iteration(
 	if not os.path.exists(saved_models_path):
 		os.mkdir(saved_models_path)
 	# Training and optimization configs 
-	if with_d==True:
-		ds_f = os.listdir(d_data_path)
 	if previous_model_path is None:
 		gpt2_model = transformers.GPT2LMHeadModel.from_pretrained("gpt2", pad_token_id=tokenizer.eos_token_id,output_hidden_states=True)
 	else:
@@ -101,8 +102,6 @@ def train_iteration(
 
 
 if __name__ == "__main__":
-	BASE_PATH = '/disk1/dokhyam/Style2Text/'
-	d_data_path = BASE_PATH + 'directions/'
 	sentences_data_path =  BASE_PATH + 'sentences.txt'
 	val_sentences_data_path = BASE_PATH + 'sentences.txt'
 	results_path1 = "/home/dokhyam/trainer_out"
