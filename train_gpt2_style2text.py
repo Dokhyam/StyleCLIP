@@ -32,7 +32,7 @@ def embed_function(examples):
 	examples['inputs_embeds'] = full_embedded_input
 	labels_pad = np.ones((1,18))[0].astype(np.int8)*-100
 	labels_full = np.hstack([labels_pad, examples['input_ids'].copy()])
-	examples['labels'] = labels_full
+	examples['labels'] = labels_full.tolist()
 	examples.pop('input_ids')
 	return examples
 
