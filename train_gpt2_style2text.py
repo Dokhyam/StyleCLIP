@@ -33,6 +33,8 @@ def embed_function(examples):
 	labels_pad = np.ones((1,18))[0].astype(np.int8)*-100
 	labels_full = np.hstack([labels_pad, examples['input_ids'].copy()])
 	examples['labels'] = labels_full.tolist()
+	attention_masks = examples['attention_mask'].copy()
+	examples['attention_mask'] = np.hstack([np.ones((1,18))[0].astype(np.int8),attention_masks]).tolist()
 	examples.pop('input_ids')
 	return examples
 
