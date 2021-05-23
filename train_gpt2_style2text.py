@@ -28,7 +28,6 @@ def embed_function(examples):
 	rand_i = random.randint(0,len(ds_f)-1)
 	direction = torch.load(os.path.join(d_data_path,ds_f[rand_i]))[0]
 	direction_pad = torch.zeros((18,input_embeds.shape[1]))
-	direction_pad[:,:input_embeds.shape[1]-1] = direction
 	full_embedded_input = torch.cat((direction_pad,input_embeds))
 	examples['inputs_embeds'] = full_embedded_input
 	labels_pad = np.ones((1,18))[0].astype(np.int8)*-100
