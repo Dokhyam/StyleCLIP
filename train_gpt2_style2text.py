@@ -85,8 +85,8 @@ def train_iteration(
 	    output_dir=results_path, #The output directory
 	    overwrite_output_dir=True, #overwrite the content of the output directory
 	    num_train_epochs=30*(ind+1), # number of training epochs
-	    per_device_train_batch_size=4, # batch size for training
-	    per_device_eval_batch_size=4,  # batch size for evaluation
+	    per_device_train_batch_size=1, # batch size for training
+	    per_device_eval_batch_size=1,  # batch size for evaluation
 	    evaluation_strategy = "epoch",
 	    save_steps=100, # after # steps model is saved
 	    warmup_steps=10,# number of warmup steps for learning rate scheduler
