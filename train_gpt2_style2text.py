@@ -27,7 +27,7 @@ def embed_function(examples):
 def add_directions(examples, dir_f):
 	rand_i = random.randint(0,len(dir_f))
 	d = torch.load(dir_f[rand_i])
-	examples['input_embeds'] = torch.cat(d[0]examples['input_embeds'])
+	examples['input_embeds'] = torch.cat(d[0], examples['input_embeds'])
 	return examples
 
 def group_texts(examples, block_size=128):
@@ -71,6 +71,7 @@ def train_iteration(
 	datasets = load_dataset("text", data_files={"train":sentences_data_path , "validation": val_sentences_data_path})
 	tokenized_datasets = datasets.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
 	embedded_datasets = tokenized_datasets.map(embed_function)
+	temp_data = embedded_datasets.map(add_directions, dir_f)
 	lm_datasets = tokenized_datasets.map(
 		group_texts,
 		batched=True,
