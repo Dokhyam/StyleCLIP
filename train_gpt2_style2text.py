@@ -29,8 +29,8 @@ def embed_function(examples):
 
 def add_directions(examples):
 	rand_i = random.randint(0,len(ds_f))
-	d = torch.load(os.path.join(d_data_path,ds_f[rand_i]))
-	examples['input_embeds'] = torch.cat(d[0], examples['input_embeds'])
+	direction = torch.load(os.path.join(d_data_path,ds_f[rand_i]))
+	examples['directions'] = direction[0]
 	return examples
 
 def group_texts(examples, block_size=128):
