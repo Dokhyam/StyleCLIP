@@ -24,6 +24,8 @@ def tokenize_function(examples):
 def embed_function(examples):
 	input_ids = examples['input_ids']
 	input_embeds = wte(torch.LongTensor(input_ids))
+	rand_i = random.randint(0,len(ds_f)-1)
+	direction = torch.load(os.path.join(d_data_path,ds_f[rand_i]))[0]
 	examples['inputs_embeds'] = input_embeds
 	examples['labels'] = examples['input_ids'].copy()
 	examples.pop('input_ids')
