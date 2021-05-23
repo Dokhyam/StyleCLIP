@@ -1,6 +1,7 @@
 import os
 import os
 import datasets
+import random
 from transformers import AdamW, get_linear_schedule_with_warmup
 from torch.utils.data import DataLoader, random_split
 from tqdm import tqdm
@@ -21,6 +22,12 @@ def embed_function(examples):
 	input_ids = examples['input_ids']
 	input_embeds = wte(torch.LongTensor(input_ids))
 	examples['inputs_embeds'] = input_embeds
+	return examples
+
+def add_directions(examples, dir_f):
+	rand_i = random.randint(0,len(dir_f))
+	d = torch.load(dir_f[rand_i])
+	examples['input_embeds'] = torch.cat(d[0]examples['input_embeds'])
 	return examples
 
 def group_texts(examples, block_size=128):
@@ -45,7 +52,7 @@ def train_iteration(
 	sentences_data_path,
 	val_sentences_data_path, 
 	saved_models_path,
-	with_d=False,
+	with_d=True,
 	previous_model_path=None
 	):
 	if not os.path.exists(saved_models_path):
