@@ -29,7 +29,7 @@ def embed_function(examples):
 
 def add_directions(examples):
 	rand_i = random.randint(0,len(ds_f))
-	d = torch.load(ds_f[rand_i])
+	d = torch.load(os.path.join(d_data_path,ds_f[rand_i]))
 	examples['input_embeds'] = torch.cat(d[0], examples['input_embeds'])
 	return examples
 
