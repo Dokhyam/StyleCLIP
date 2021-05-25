@@ -17,11 +17,15 @@ def generate_image_from_latents(latent_code, randomize_noise=True):
 
 def get_clip_text_embeddings(text:list, clip_model):
 	tokenized_text = clip.tokenize(text).to(device)
-	return clip_model.encode_text(tokenized_text)
+	text_features = clip_model.encode_text(tokenized_text)
+	text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+	return text_features
 
 def get_clip_image_embeddings(preprocess, image, clip_model):
 	preprocessed_image = preprocess(Image.fromarray((255*image).astype(np.uint8))).unsqueeze(0).to(device)
-	return clip_model.encode_image(preprocessed_image)
+	image_features = clip_model.encode_image(preprocessed_image)
+	image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+	return image_features
 
 def cosine_similarity(a,b):
 	return np.dot(a, b)/(np.linalg.norm(a)*np.linalg.norm(b))
