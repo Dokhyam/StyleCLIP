@@ -19,6 +19,7 @@ BASE_PATH = '/disk1/dokhyam/Style2Text/'
 d_data_path = BASE_PATH + 'directions/'
 ds_f = os.listdir(d_data_path)
 
+
 def tokenize_function(examples):
 	return tokenizer(examples["text"])
 
@@ -120,6 +121,7 @@ if __name__ == "__main__":
 	val_sentences_data_path = BASE_PATH + 'sentences.txt'
 	results_path1 = "/home/dokhyam/trainer_out"
 	saved_models_path = '/home/dokhyam/Models/'
+
 	train_iteration(
 		0,
 		results_path1,
