@@ -17,10 +17,8 @@ tokenizer = transformers.GPT2Tokenizer.from_pretrained("gpt2")
 wte = nn.Embedding(50257,768)
 BASE_PATH = '/disk1/dokhyam/Style2Text/'
 d_data_path = BASE_PATH + 'directions/'
-DS_DICT = {}
 ds_f = os.listdir(d_data_path)
-for d_f in ds_f:
-	DS_DICT[d_f] = os.listdir(os.path.join(d_data_path,d_f))
+
 
 def tokenize_function(examples):
 	return tokenizer(examples["text"])
