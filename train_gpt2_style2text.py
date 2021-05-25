@@ -23,7 +23,7 @@ ds_f = os.listdir(d_data_path)
 def tokenize_function(examples):
 	return tokenizer(examples["text"])
 
-def embed_function(examples):
+def embed_and_add_directions_function(examples):
 	input_ids = examples['input_ids']
 	input_embeds = wte(torch.LongTensor(input_ids))
 	rand_i = random.randint(0,len(ds_f)-1)
@@ -36,6 +36,14 @@ def embed_function(examples):
 	examples['labels'] = labels_full.tolist()
 	attention_masks = examples['attention_mask'].copy()
 	examples['attention_mask'] = np.hstack([np.ones((1,18))[0].astype(np.int8),attention_masks]).tolist()
+	examples.pop('input_ids')
+	return examples
+
+def embed_function(examples):
+	input_ids = examples['input_ids']
+	input_embeds = wte(torch.LongTensor(input_ids))
+	examples['input_embeds'] = input_embeds
+	examples['labels'] = input_ids
 	examples.pop('input_ids')
 	return examples
 
@@ -83,14 +91,11 @@ def train_iteration(
 	# dataloaders
 	datasets = load_dataset("text", data_files={"train":sentences_data_path , "validation": val_sentences_data_path})
 	tokenized_datasets = datasets.map(tokenize_function, batched=True, num_proc=4, remove_columns=["text"])
-	lm_datasets = tokenized_datasets.map(embed_function)
+	if with_d:
+		lm_datasets = tokenized_datasets.map(embed_and_add_directions_function)
+	else:
+		lm_datasets = tokenized_datasets.max(embed_function)
 # 	lm_datasets = embedded_datasets.map(add_directions)
-# 	lm_datasets = tokenized_datasets.map(
-# 		group_texts,
-# 		batched=True,
-# 		batch_size=64,
-# 		num_proc=4,
-# 	)
 
 	training_args = TrainingArguments(
 	    output_dir=results_path, #The output directory
@@ -121,14 +126,15 @@ if __name__ == "__main__":
 	val_sentences_data_path = BASE_PATH + 'sentences.txt'
 	results_path1 = "/home/dokhyam/trainer_out"
 	saved_models_path = '/home/dokhyam/Models/'
-
+	# pretrain model for hair
 	train_iteration(
 		0,
 		results_path1,
 		d_data_path,
 		sentences_data_path,
 		val_sentences_data_path,
-		saved_models_path
+		saved_models_path,
+		with_d = False
 		)
 	results_path2 = "/home/dokhyam/trainer_out2"
 	train_iteration(
