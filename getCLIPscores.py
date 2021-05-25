@@ -5,6 +5,7 @@ from models.stylegan2.model import Generator
 import clip
 from PIL import Image
 
+
 device = "cuda" if torch.cuda.is_available() else "cpu"
 ckpt = torch.load('mapper/pretrained/stylegan2-ffhq-config-f.pt')
 StyleGANGenerator = Generator(1024,512,8).to(device).eval()
@@ -31,32 +32,35 @@ def get_keys(d, name):
 	d_filt = {k[len(name) + 1:]: v for k, v in d.items() if k[:len(name)] == name}
 	return d_filt
 
+def per_d_function(d,S, image_latents):
+	alpha =  np.random.uniform(1.5,4.0)
+	cos_sim_all = []
+	image_ind = 0
+	input_batch = image_latents[image_ind,:,:]
+	input_cuda = input_batch.to(device).float()
+	I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
+	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
+	s_neutral = 'She has hair'
+	neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
+	with torch.no_grad():
+		image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I2, clip_model) - get_clip_image_embeddings(clip_preprocess,I1, clip_model)
+		text_embeddings_diff = get_clip_text_embeddings(S,clip_model) - neutral_embeddings
+		for i in range(len(text_embeddings_diff)):
+			cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
+			print(f'text: {S[i]}. score: {cos_sim}')
+			cos_sim_all.append(cos_sim)
+	return cos_sim_all
+			
+
 def run():
 	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
 	directions_path = '/disk1/dokhyam/StyleCLIP/directions/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
-	image_ind = 0
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
-		alpha =  np.random.uniform(1.5,4.0)
-		input_batch = image_latents[image_ind,:,:]
-		input_cuda = input_batch.to(device).float()
-		I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
-		I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
-		s_neutral = 'She has hair'
-		neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
-		s_temp = ['Her hair is in a tight bun', 'Her hair is brown']
-		with torch.no_grad():
-			image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I2, clip_model) - get_clip_image_embeddings(clip_preprocess,I1, clip_model)
-			text_embeddings_diff = get_clip_text_embeddings(s_temp,clip_model) - neutral_embeddings
-			for i in range(len(text_embeddings_diff)):
-				cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
-				print(f'text: {s_temp[i]}. score: {cos_sim}')
-			
-
-		image_ind +=1
+		sim = per_d_func(d, ['Her hair is in a tight bun', 'Her hair is brown'],image_latents)
 		
 if __name__ == "__main__":
 	run()
