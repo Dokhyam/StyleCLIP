@@ -44,11 +44,13 @@ def per_d_function(d,S, image_latents):
 	input_cuda = input_batch.to(device).float()
 	I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
 	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
-	s_neutral = 'She has hair'
+	s_neutral = 'A photo of a face with hair'
 	neutral_embeddings = get_clip_text_embeddings(s_neutral, clip_model)
 	with torch.no_grad():
 		image_embeddings_diff = get_clip_image_embeddings(clip_preprocess,I2, clip_model) - get_clip_image_embeddings(clip_preprocess,I1, clip_model)
+		image_embeddings_diff = image_embeddings_diff / image_embeddings_diff.norm(dim=-1, keepdim=True)
 		text_embeddings_diff = get_clip_text_embeddings(S,clip_model) - neutral_embeddings
+		text_embeddings_diff = text_embeddings_diff / text_embeddings_diff.norm(dim=-1, keepdim=True)
 		for i in range(len(text_embeddings_diff)):
 			cos_sim = cosine_similarity(image_embeddings_diff.cpu().numpy(),text_embeddings_diff[i].cpu().numpy()) 
 			print(f'text: {S[i]}. score: {cos_sim}')
