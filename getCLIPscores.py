@@ -67,7 +67,7 @@ def run():
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
-		sim = per_d_function(d, ['Face with short hair', 'Face with afro hair'],image_latents)
+		sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with afro hair'],image_latents)
 		
 if __name__ == "__main__":
 	run()
