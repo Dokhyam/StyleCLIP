@@ -67,7 +67,7 @@ def per_d_function(d,S, image_latents):
 
 def run():
 	
-	directions_path = '/disk1/dokhyam/StyleCLIP/mapper/results/mohawk/inference_results/'
+	directions_path = '/disk1/dokhyam/StyleCLIP/mapper/results/curly/inference_results/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
 	
