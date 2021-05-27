@@ -36,7 +36,7 @@ def get_keys(d, name):
 	d_filt = {k[len(name) + 1:]: v for k, v in d.items() if k[:len(name)] == name}
 	return d_filt
 
-def per_d_function(d,S, image_latents):
+def per_d_function(d,S, image_latents, clip_model):
 	alpha =  np.random.uniform(1.5,4.0)
 	cos_sim_all = []
 	image_ind = 0
@@ -66,7 +66,7 @@ def run():
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
-		sim = per_d_function(d, ['Her hair is in a tight bun', 'Her hair is brown'],image_latents)
+		sim = per_d_function(d, ['Her hair is in a tight bun', 'Her hair is brown'],image_latents, clip_model)
 		
 if __name__ == "__main__":
 	run()
