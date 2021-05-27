@@ -4,6 +4,7 @@ import torch
 from models.stylegan2.model import Generator
 import clip
 from PIL import Image
+import imageio as io
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -44,7 +45,9 @@ def per_d_function(d,S, image_latents):
 	input_batch = image_latents[image_ind,:,:]
 	input_cuda = input_batch.to(device).float()
 	I1 = generate_image_from_latents(input_cuda.unsqueeze(0), False)
-	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device),False)
+	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + 5*d.to(device),False)
+	io.imwrite('/home/dokhyam/I1.jpg',I1)
+	io.imwrite('/home/dokhyam/I2.jpg',I2)
 	s_neutral = 'A photo of a face with hair'
 	neutral_embeddings = get_clip_text_embeddings(s_neutral)
 	with torch.no_grad():
