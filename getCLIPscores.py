@@ -6,6 +6,7 @@ from models.stylegan2.model import Generator
 import clip
 from PIL import Image
 import imageio as io
+import random
 
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -40,10 +41,10 @@ def get_keys(d, name):
 	return d_filt
 
 def per_d_function(d,S, image_latents):
-	alpha =  np.random.uniform(0.5,1)
+	alpha =  np.random.uniform(1.5,5)
 	print(alpha)
 	cos_sim_all = []
-	image_ind = 0
+	image_ind = random.randint(0,len(image_latents)-1)
 	input_batch = image_latents[image_ind,:,:]
 	input_cuda = input_batch.to(device).float()
 	I1 = generate_image_from_latents(input_cuda.unsqueeze(0), False)
