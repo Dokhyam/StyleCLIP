@@ -64,13 +64,16 @@ def per_d_function(d,S, image_latents):
 
 def run():
 	
-	directions_path = '/disk1/dokhyam/StyleCLIP/directions_afro/ds/'
+	directions_path = '/disk1/dokhyam/StyleCLIP/mapper/results/afro/inference_results/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
 	
 	for d_file in directions_list:
-		d = torch.load(directions_path + d_file)
-		sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with afro hair'],image_latents)
+		if 'latent_delta' in d_file:
+			d = torch.load(directions_path + d_file)
+			sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with afro hair'],image_latents)
+		else:
+			continue
 		
 if __name__ == "__main__":
 	run()
