@@ -88,7 +88,8 @@ def run():
 def run_on_batch(inputs, net, couple_outputs=False):
 	w = inputs
 	with torch.no_grad():
-		w_hat = w + 0.1 * net.mapper(w)
+		#w_hat = w + 0.1 * net.mapper(w)
+		w_hat = net.mapper(w)
 		x_hat, w_hat = net.decoder([w_hat], input_is_latent=True, return_latents=True, randomize_noise=False, truncation=1)
 		result_batch = (x_hat, w_hat)
 		if couple_outputs:
