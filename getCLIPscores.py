@@ -43,8 +43,8 @@ def per_d_function(d,S, image_latents):
 	image_ind = 0
 	input_batch = image_latents[image_ind,:,:]
 	input_cuda = input_batch.to(device).float()
-	I1 = generate_image_from_latents(input_cuda.unsqueeze(0))
-	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device))
+	I1 = generate_image_from_latents(input_cuda.unsqueeze(0), False)
+	I2 = generate_image_from_latents(input_cuda.unsqueeze(0) + alpha*d.to(device),False)
 	s_neutral = 'A photo of a face with hair'
 	neutral_embeddings = get_clip_text_embeddings(s_neutral)
 	with torch.no_grad():
