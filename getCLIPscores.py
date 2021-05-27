@@ -1,3 +1,4 @@
+
 import os
 import numpy as np
 import torch
@@ -39,7 +40,8 @@ def get_keys(d, name):
 	return d_filt
 
 def per_d_function(d,S, image_latents):
-	alpha =  np.random.uniform(1.5,4.0)
+	alpha =  np.random.uniform(0.5,1)
+	print(alpha)
 	cos_sim_all = []
 	image_ind = 0
 	input_batch = image_latents[image_ind,:,:]
@@ -64,14 +66,14 @@ def per_d_function(d,S, image_latents):
 
 def run():
 	
-	directions_path = '/disk1/dokhyam/StyleCLIP/mapper/results/afro/inference_results/'
+	directions_path = '/disk1/dokhyam/StyleCLIP/mapper/results/mohawk/inference_results/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
 	
 	for d_file in directions_list:
 		if 'latent_delta' in d_file:
 			d = torch.load(directions_path + d_file)
-			sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with afro hair'],image_latents)
+			sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with curly hair'],image_latents)
 		else:
 			continue
 		
