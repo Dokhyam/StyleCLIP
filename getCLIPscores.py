@@ -41,7 +41,7 @@ def get_keys(d, name):
 	return d_filt
 
 def per_d_function(d,S, image_latents):
-	alpha =  np.random.uniform(0.1,0.5)
+	alpha =  np.random.uniform(0.5,1.0)
 	print(alpha)
 	cos_sim_all = []
 	image_ind = random.randint(0,len(image_latents)-1)
