@@ -41,7 +41,7 @@ def get_keys(d, name):
 	return d_filt
 
 def per_d_function(d,S, image_latents):
-	alpha =  np.random.uniform(1.5,10)
+	alpha =  np.random.uniform(0.1,0.5)
 	print(alpha)
 	cos_sim_all = []
 	image_ind = random.randint(0,len(image_latents)-1)
@@ -72,9 +72,12 @@ def run():
 	directions_list = os.listdir(directions_path)
 	
 	for d_file in directions_list:
-		if 'latent_delta' in d_file:
-			d = torch.load(directions_path + d_file)
-			sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with curly hair'],image_latents)
+		if 'latent' in d_file:
+			if 'delta' in d_file:
+				continue
+			else:
+				d = torch.load(directions_path + d_file)
+				sim = per_d_function(d, ['A photo of a face with short hair', 'A photo of a face with curly hair'],image_latents)
 		else:
 			continue
 		
