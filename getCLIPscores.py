@@ -60,13 +60,13 @@ def per_d_function(d,S, image_latents):
 
 def run():
 	clip_model, clip_preprocess = clip.load("ViT-B/32", device=device)
-	directions_path = '/disk1/dokhyam/StyleCLIP/directions/'
+	directions_path = '/disk1/dokhyam/StyleCLIP/directions_afro/ds/'
 	image_latents = torch.load('/disk1/dokhyam/StyleCLIP/mapper/latent_data/train_faces.pt')
 	directions_list = os.listdir(directions_path)
 	
 	for d_file in directions_list:
 		d = torch.load(directions_path + d_file)
-		sim = per_d_func(d, ['Her hair is in a tight bun', 'Her hair is brown'],image_latents)
+		sim = per_d_function(d, ['Her hair is in a tight bun', 'Her hair is brown'],image_latents)
 		
 if __name__ == "__main__":
 	run()
