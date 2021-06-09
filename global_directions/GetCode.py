@@ -51,8 +51,45 @@ def init_tf(config_dict: dict = None) -> None:
 
     # Create default TensorFlow session.
     create_session(cfg, force_as_default=True)
-    
-    
+
+def create_session(config_dict: dict = None, force_as_default: bool = False) -> tf.Session:
+    """Create tf.Session based on config dict."""
+    # Setup TensorFlow config proto.
+    cfg = _sanitize_tf_config(config_dict)
+    config_proto = tf.ConfigProto()
+    for key, value in cfg.items():
+        fields = key.split(".")
+        if fields[0] not in ["rnd", "env"]:
+            obj = config_proto
+            for field in fields[:-1]:
+                obj = getattr(obj, field)
+            setattr(obj, fields[-1], value)
+
+    # Create session.
+    session = tf.Session(config=config_proto)
+    if force_as_default:
+        # pylint: disable=protected-access
+        session._default_session = session.as_default()
+        session._default_session.enforce_nesting = False
+        session._default_session.__enter__() # pylint: disable=no-member
+
+    return session
+
+
+def _sanitize_tf_config(config_dict: dict = None) -> dict:
+    # Defaults.
+    cfg = dict()
+    cfg["rnd.np_random_seed"]               = None      # Random seed for NumPy. None = keep as is.
+    cfg["rnd.tf_random_seed"]               = "auto"    # Random seed for TensorFlow. 'auto' = derive from NumPy random state. None = keep as is.
+    cfg["env.TF_CPP_MIN_LOG_LEVEL"]         = "1"       # 0 = Print all available debug info from TensorFlow. 1 = Print warnings and errors, but disable debug info.
+    cfg["graph_options.place_pruned_graph"] = True      # False = Check that all ops are available on the designated device. True = Skip the check for ops that are not used.
+    cfg["gpu_options.allow_growth"]         = True      # False = Allocate all GPU memory at the beginning. True = Allocate only as much GPU memory as needed.
+
+    # User overrides.
+    if config_dict is not None:
+        cfg.update(config_dict)
+    return cfg
+
 #stylegan-ada
 def SelectName(layer_name,suffix):
     if suffix==None:
