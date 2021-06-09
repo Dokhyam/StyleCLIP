@@ -4,14 +4,14 @@
 import os
 import pickle
 import numpy as np
-from dnnlib import tflib  
+# from dnnlib import tflib  
 import tensorflow as tf 
 
 import argparse
 
 def LoadModel(dataset_name):
     # Initialize TensorFlow.
-    tflib.init_tf()
+    init_tf()
     model_path='./model/'
     model_name=dataset_name+'.pkl'
     
@@ -23,6 +23,34 @@ def LoadModel(dataset_name):
 def lerp(a,b,t):
      return a + (b - a) * t
 
+def init_tf(config_dict: dict = None) -> None:
+    """Initialize TensorFlow session using good default settings."""
+    # Skip if already initialized.
+    if tf.get_default_session() is not None:
+        return
+
+    # Setup config dict and random seeds.
+    cfg = _sanitize_tf_config(config_dict)
+    np_random_seed = cfg["rnd.np_random_seed"]
+    if np_random_seed is not None:
+        np.random.seed(np_random_seed)
+    tf_random_seed = cfg["rnd.tf_random_seed"]
+    if tf_random_seed == "auto":
+        tf_random_seed = np.random.randint(1 << 31)
+    if tf_random_seed is not None:
+        tf.set_random_seed(tf_random_seed)
+
+    # Setup environment variables.
+    for key, value in list(cfg.items()):
+        fields = key.split(".")
+        if fields[0] == "env":
+            assert len(fields) == 2
+            os.environ[fields[1]] = str(value)
+
+    # Create default TensorFlow session.
+    create_session(cfg, force_as_default=True)
+    
+    
 #stylegan-ada
 def SelectName(layer_name,suffix):
     if suffix==None:
