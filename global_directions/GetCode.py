@@ -1,6 +1,3 @@
-
-
-
 import os
 import pickle
 import numpy as np
@@ -28,7 +25,7 @@ def lerp(a,b,t):
 def init_tf(config_dict: dict = None) -> None:
     """Initialize TensorFlow session using good default settings."""
     # Skip if already initialized.
-    if tf.get_default_session() is not None:
+    if tf.compat.v1.get_default_session() is not None:
         return
 
     # Setup config dict and random seeds.
@@ -56,7 +53,7 @@ def create_session(config_dict: dict = None, force_as_default: bool = False):
     """Create tf.Session based on config dict."""
     # Setup TensorFlow config proto.
     cfg = _sanitize_tf_config(config_dict)
-    config_proto = tf.ConfigProto(device_count = {'GPU': 0})
+    config_proto = tf.ConfigProto()
     
     for key, value in cfg.items():
         fields = key.split(".")
