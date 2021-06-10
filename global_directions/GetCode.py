@@ -37,7 +37,7 @@ def init_tf(config_dict: dict = None) -> None:
     if tf_random_seed == "auto":
         tf_random_seed = np.random.randint(1 << 31)
     if tf_random_seed is not None:
-        tf.compat.v1.set_random_seed(tf_random_seed)
+        tf.random.set_seed(tf_random_seed)
 
     # Setup environment variables.
     for key, value in list(cfg.items()):
@@ -53,7 +53,7 @@ def create_session(config_dict: dict = None, force_as_default: bool = False):
     """Create tf.Session based on config dict."""
     # Setup TensorFlow config proto.
     cfg = _sanitize_tf_config(config_dict)
-    config_proto = tf.ConfigProto()
+    config_proto = tf.compat.v1.ConfigProto()
     
     for key, value in cfg.items():
         fields = key.split(".")
