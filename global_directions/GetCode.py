@@ -52,7 +52,7 @@ def init_tf(config_dict: dict = None) -> None:
     # Create default TensorFlow session.
     create_session(cfg, force_as_default=True)
 
-def create_session(config_dict: dict = None, force_as_default: bool = False) -> tf.Session:
+def create_session(config_dict: dict = None, force_as_default: bool = False):
     """Create tf.Session based on config dict."""
     # Setup TensorFlow config proto.
     cfg = _sanitize_tf_config(config_dict)
