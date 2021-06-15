@@ -27,70 +27,70 @@ def LoadModel(dataset_name):
 def lerp(a,b,t):
      return a + (b - a) * t
 
-def init_tf(config_dict: dict = None) -> None:
-    """Initialize TensorFlow session using good default settings."""
-    # Skip if already initialized.
-    if tf.get_default_session() is not None:
-        return
+# def init_tf(config_dict: dict = None) -> None:
+#     """Initialize TensorFlow session using good default settings."""
+#     # Skip if already initialized.
+#     if tf.get_default_session() is not None:
+#         return
 
-    # Setup config dict and random seeds.
-    cfg = _sanitize_tf_config(config_dict)
-    np_random_seed = cfg["rnd.np_random_seed"]
-    if np_random_seed is not None:
-        np.random.seed(np_random_seed)
-    tf_random_seed = cfg["rnd.tf_random_seed"]
-    if tf_random_seed == "auto":
-        tf_random_seed = np.random.randint(1 << 31)
-    if tf_random_seed is not None:
-        tf.random.set_seed(tf_random_seed)
+#     # Setup config dict and random seeds.
+#     cfg = _sanitize_tf_config(config_dict)
+#     np_random_seed = cfg["rnd.np_random_seed"]
+#     if np_random_seed is not None:
+#         np.random.seed(np_random_seed)
+#     tf_random_seed = cfg["rnd.tf_random_seed"]
+#     if tf_random_seed == "auto":
+#         tf_random_seed = np.random.randint(1 << 31)
+#     if tf_random_seed is not None:
+#         tf.random.set_seed(tf_random_seed)
 
-    # Setup environment variables.
-    for key, value in list(cfg.items()):
-        fields = key.split(".")
-        if fields[0] == "env":
-            assert len(fields) == 2
-            os.environ[fields[1]] = str(value)
+#     # Setup environment variables.
+#     for key, value in list(cfg.items()):
+#         fields = key.split(".")
+#         if fields[0] == "env":
+#             assert len(fields) == 2
+#             os.environ[fields[1]] = str(value)
 
-    # Create default TensorFlow session.
-    create_session(cfg, force_as_default=True)
+#     # Create default TensorFlow session.
+#     create_session(cfg, force_as_default=True)
 
-def create_session(config_dict: dict = None, force_as_default: bool = False):
-    """Create tf.Session based on config dict."""
-    # Setup TensorFlow config proto.
-    cfg = _sanitize_tf_config(config_dict)
-    config_proto = tf.compat.v1.ConfigProto()
+# def create_session(config_dict: dict = None, force_as_default: bool = False):
+#     """Create tf.Session based on config dict."""
+#     # Setup TensorFlow config proto.
+#     cfg = _sanitize_tf_config(config_dict)
+#     config_proto = tf.compat.v1.ConfigProto()
     
-    for key, value in cfg.items():
-        fields = key.split(".")
-        if fields[0] not in ["rnd", "env"]:
-            obj = config_proto
-            for field in fields[:-1]:
-                obj = getattr(obj, field)
-            setattr(obj, fields[-1], value)
+#     for key, value in cfg.items():
+#         fields = key.split(".")
+#         if fields[0] not in ["rnd", "env"]:
+#             obj = config_proto
+#             for field in fields[:-1]:
+#                 obj = getattr(obj, field)
+#             setattr(obj, fields[-1], value)
 
-    # Create session.
-    session = tf.Session(config=config_proto)
-    if force_as_default:
-        # pylint: disable=protected-access
-        session._default_session = session.as_default()
-        session._default_session.enforce_nesting = False
-        session._default_session.__enter__() # pylint: disable=no-member
+#     # Create session.
+#     session = tf.Session(config=config_proto)
+#     if force_as_default:
+#         # pylint: disable=protected-access
+#         session._default_session = session.as_default()
+#         session._default_session.enforce_nesting = False
+#         session._default_session.__enter__() # pylint: disable=no-member
 
-    return session
+#     return session
 
 
-def _sanitize_tf_config(config_dict: dict = None) -> dict:
-    # Defaults.
-    cfg = dict()
-    cfg["rnd.np_random_seed"]               = None      # Random seed for NumPy. None = keep as is.
-    cfg["rnd.tf_random_seed"]               = "auto"    # Random seed for TensorFlow. 'auto' = derive from NumPy random state. None = keep as is.
-    cfg["env.TF_CPP_MIN_LOG_LEVEL"]         = "1"       # 0 = Print all available debug info from TensorFlow. 1 = Print warnings and errors, but disable debug info.
-    cfg["graph_options.place_pruned_graph"] = True      # False = Check that all ops are available on the designated device. True = Skip the check for ops that are not used.
-    cfg["gpu_options.allow_growth"]         = True      # False = Allocate all GPU memory at the beginning. True = Allocate only as much GPU memory as needed.
-    # User overrides.
-    if config_dict is not None:
-        cfg.update(config_dict)
-    return cfg
+# def _sanitize_tf_config(config_dict: dict = None) -> dict:
+#     # Defaults.
+#     cfg = dict()
+#     cfg["rnd.np_random_seed"]               = None      # Random seed for NumPy. None = keep as is.
+#     cfg["rnd.tf_random_seed"]               = "auto"    # Random seed for TensorFlow. 'auto' = derive from NumPy random state. None = keep as is.
+#     cfg["env.TF_CPP_MIN_LOG_LEVEL"]         = "1"       # 0 = Print all available debug info from TensorFlow. 1 = Print warnings and errors, but disable debug info.
+#     cfg["graph_options.place_pruned_graph"] = True      # False = Check that all ops are available on the designated device. True = Skip the check for ops that are not used.
+#     cfg["gpu_options.allow_growth"]         = True      # False = Allocate all GPU memory at the beginning. True = Allocate only as much GPU memory as needed.
+#     # User overrides.
+#     if config_dict is not None:
+#         cfg.update(config_dict)
+#     return cfg
 
 #stylegan-ada
 def SelectName(layer_name,suffix):
