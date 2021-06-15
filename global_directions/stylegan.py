@@ -31,7 +31,7 @@ def runtime_coef(kernel_size, gain, fmaps_in, fmaps_out, lrmul=1.0):
 
 def pixel_norm(x, epsilon=1e-8):
     epsilon = tf.constant(epsilon, dtype=x.dtype, name='epsilon')
-    return x * tf.rsqrt(tf.reduce_mean(tf.square(x), axis=1, keepdims=True) + epsilon)
+    return x * tf.math.rsqrt(tf.reduce_mean(tf.square(x), axis=1, keepdims=True) + epsilon)
 
 class PixelNorm(Layer):
     def __init__(self, name):
