@@ -91,7 +91,7 @@ class DenseLayer(Dense):
         x, b, w = inputs, self.bias * self.lrmul, self.kernel * runtime_coef([1,1], self.gain, inputs.shape[1], self.units, lrmul=self.lrmul)
         
         # Input x kernel
-        if len(x.shape) > 2: x = tf.reshape(x, [-1, np.prod([d.value for d in x.shape[1:]])])
+        if len(x.shape) > 2: x = tf.reshape(x, [-1, np.prod([d for d in x.shape[1:]])])
         x = tf.matmul(x, w)
         
         # Bias
@@ -115,7 +115,7 @@ class Conv2d(Conv2D):
         else:
             w = self.kernel_modifier(self.kernel)
             
-        outputs = self._convolution_op(inputs, w * runtime_coef(self.kernel_size, self.gain, inputs.shape[1].value, self.filters))
+        outputs = self._convolution_op(inputs, w * runtime_coef(self.kernel_size, self.gain, inputs.shape[1], self.filters))
         
         if self.use_bias:
             b = self.bias * self.lrmul        
@@ -156,7 +156,7 @@ class ApplyNoise(Layer):
 
     def build(self, input_shape):
         input_shape = input_shape[0]
-        self.weight = self.add_variable('weight', shape=[input_shape[1].value], initializer=tf.initializers.zeros())
+        self.weight = self.add_variable('weight', shape=[input_shape[1]], initializer=tf.initializers.zeros())
         
     def call(self, inputs):        
         #noise = tf.random_normal([tf.shape(x)[0], 1, x.shape[2], x.shape[3]], dtype=x.dtype)
@@ -170,7 +170,7 @@ class ApplyBias(Layer):
         self.lrmul = lrmul
         
     def build(self, input_shape):
-        self.bias = self.add_variable('bias', shape=[input_shape[1].value])
+        self.bias = self.add_variable('bias', shape=[input_shape[1]])
         
     def call(self, x):
         b = self.bias * self.lrmul
@@ -196,7 +196,7 @@ class StyleModApply(Layer):
         return x * (style[:,0] + 1) + style[:,1]
 
 def _blur2d(x, f=[1,2,1], normalize=True, flip=False, stride=1):
-    assert x.shape.ndims == 4 and all(dim.value is not None for dim in x.shape[1:])
+    assert x.shape.ndims == 4 and all(dim is not None for dim in x.shape[1:])
     assert isinstance(stride, int) and stride >= 1
 
     # Finalize filter kernel.
@@ -230,7 +230,7 @@ def Blur(name, blur_filter=[1,2,1]):
     return Lambda(lambda x: blur2d(x, blur_filter), name=name)
 
 def _downscale2d(x, factor=2, gain=1):
-    assert x.shape.ndims == 4 and all(dim.value is not None for dim in x.shape[1:])
+    assert x.shape.ndims == 4 and all(dim is not None for dim in x.shape[1:])
     assert isinstance(factor, int) and factor >= 1
 
     # 2x2, float32 => downscale using _blur2d().
@@ -252,7 +252,7 @@ def _downscale2d(x, factor=2, gain=1):
     return tf.nn.avg_pool(x, ksize=ksize, strides=ksize, padding='VALID', data_format='NCHW')
 
 def _upscale2d(x, factor=2, gain=1):
-    assert x.shape.ndims == 4 and all(dim.value is not None for dim in x.shape[1:])
+    assert x.shape.ndims == 4 and all(dim is not None for dim in x.shape[1:])
     assert isinstance(factor, int) and factor >= 1
 
     # Apply gain.
@@ -314,7 +314,7 @@ class Conv2d_transpose(Conv2DTranspose):
         self.kernel_modifier = kernel_modifier
         
     def build(self, input_shape):
-        shape = [self.kernel_size[0], self.kernel_size[1], input_shape[1].value, self.filters]
+        shape = [self.kernel_size[0], self.kernel_size[1], input_shape[1], self.filters]
         self.kernel = self.add_variable('weight', shape=shape, initializer=tf.initializers.zeros())
             
     def call(self, inputs):
@@ -325,7 +325,7 @@ class Conv2d_transpose(Conv2DTranspose):
             w = tf.add_n([w[1:, 1:], w[:-1, 1:], w[1:, :-1], w[:-1, :-1]])
             return w
 
-        x, w = inputs, fused_op(self.kernel * runtime_coef(self.kernel_size, self.gain, inputs.shape[1].value, self.filters, lrmul=self.lrmul))
+        x, w = inputs, fused_op(self.kernel * runtime_coef(self.kernel_size, self.gain, inputs.shape[1], self.filters, lrmul=self.lrmul))
         
         os = [tf.shape(inputs)[0], self.filters, inputs.shape[2] * 2, inputs.shape[3] * 2]
         
