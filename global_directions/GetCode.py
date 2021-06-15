@@ -280,7 +280,7 @@ if __name__ == "__main__":
 #        GetImg(Gs,num_img=num_img,num_once=num_once,dataset_name=dataset_name,save_name='images_100K') #no need 
     elif args.code_type=='s':
         save_name='S'
-        save_tmp=GetS(dataset_name,num_img=2_000)
+        save_tmp=GetS(dataset_name,num_img=2000)
         tmp='./npy/'+dataset_name+'/'+save_name
         with open(tmp, "wb") as fp:
             pickle.dump(save_tmp, fp)
