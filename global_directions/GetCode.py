@@ -261,8 +261,8 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
     random_state=5
-    num_img=100_000 
-    num_once=1_000
+    num_img=100000 
+    num_once=1000
     dataset_name=args.dataset_name
     
     if not os.path.isfile('./model/'+dataset_name+'.pkl'):
