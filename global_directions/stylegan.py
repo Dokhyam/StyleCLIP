@@ -88,7 +88,7 @@ class DenseLayer(Dense):
         self.lrmul = lrmul
     
     def call(self, inputs):
-        x, b, w = inputs, self.bias * self.lrmul, self.kernel * runtime_coef([1,1], self.gain, inputs.shape[1].value, self.units, lrmul=self.lrmul)
+        x, b, w = inputs, self.bias * self.lrmul, self.kernel * runtime_coef([1,1], self.gain, inputs.shape[1], self.units, lrmul=self.lrmul)
         
         # Input x kernel
         if len(x.shape) > 2: x = tf.reshape(x, [-1, np.prod([d.value for d in x.shape[1:]])])
